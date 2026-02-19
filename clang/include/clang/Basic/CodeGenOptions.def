@@ -223,6 +223,9 @@ CODEGENOPT(ObjCDirectPreconditionThunk, 1, 0, Benign)
 VALUE_CODEGENOPT(OptimizationLevel, 2, 0, Compatible) ///< The -O[0-3] option specified.
 VALUE_CODEGENOPT(OptimizeSize, 2, 0, Compatible) ///< If -Os (==1, Benign) or -Oz (==2, Benign) is specified.
 
+/// ThinLTO backend codegen optimization level, set via -fthinlto-CGO.
+VALUE_CODEGENOPT(ThinLTOCGOptLevel, 3, ThinLTOCGOptLevelUnspecified, Benign)
+
 CODEGENOPT(AtomicProfileUpdate , 1, 0, Benign) ///< Set -fprofile-update=atomic
 CODEGENOPT(ContinuousProfileSync, 1, 0, Benign) ///< Enable continuous instrumentation profiling
 /// Choose profile instrumenation kind or no instrumentation.

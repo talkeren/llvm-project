@@ -1,0 +1,40 @@
+[DTLTO][Clang] Propagate ThinLTO backend CG opt level via -fthinlto-CGO
+
+Add a Clang driver option -fthinlto-CGO<N> to explicitly set the backend 
+code generation optimization level during ThinLTO independently of the 
+LTO pipeline optimization level (-O).
+
+Motivation:
+
+ThinLTO has two distinct optimization levels: one for the LTO pipeline and one 
+for backend code generation. For in-process ThinLTO, the backend codegen level 
+is explicitly configured via the `--lto-CGO` linker flag, or derived by clamping 
+the `--lto-O` optimization level.
+
+However, for distributed ThinLTO (using `-fthinlto-index`) and lld-driven DTLTO, 
+there was previously no way to propagate this chosen codegen level to the remote 
+backend invocations. Consequently, remote backends implicitly fell back to the 
+LTO pipeline `-O` level, causing divergence between in-process and distributed 
+ThinLTO builds. This change introduces a flag that allows the linker to explicitly 
+dictate the backend optimization level for remote invocations.
+
+Behavior:
+
+-fthinlto-CGO<N> sets the codegen optimization level explicitly.
+When omitted, the backend codegen level implicitly follows the LTO pipeline -O level.
+For DTLTO, the linker appends this flag to the remote command line
+using the resolved Config::CGOptLevel.
+
+For example:
+clang -O3 -fthinlto-index=foo.bc -fthinlto-CGO1
+
+This produces the same result as passing --lto-O3 and --lto-CGO1 to lld
+during an in-process ThinLTO build.
+
+Implementation:
+
+Added driver-level and CC1 option -fthinlto-CGO.
+Forwarded the option from the driver to CC1.
+Updated the ThinLTO backend execution path to prefer the explicit level.
+Updated LTO to pass the flag down to DTLTO remote invocations.
+Added driver and DTLTO tests to verify option interactions.

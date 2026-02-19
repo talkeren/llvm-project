@@ -1345,10 +1345,14 @@ runThinLTOBackend(CompilerInstance &CI, ModuleSummaryIndex *CombinedIndex,
   Conf.CodeModel = getCodeModel(CGOpts);
   Conf.MAttrs = TOpts.Features;
   Conf.RelocModel = CGOpts.RelocationModel;
-  std::optional<CodeGenOptLevel> OptLevelOrNone =
-      CodeGenOpt::getLevel(CGOpts.OptimizationLevel);
-  assert(OptLevelOrNone && "Invalid optimization level!");
-  Conf.CGOptLevel = *OptLevelOrNone;
+  unsigned EffectiveCGOptLevel =
+      CGOpts.ThinLTOCGOptLevel != CodeGenOptions::ThinLTOCGOptLevelUnspecified
+          ? CGOpts.ThinLTOCGOptLevel
+          : CGOpts.OptimizationLevel;
+  std::optional<CodeGenOptLevel> CGOptLevelOrNone =
+      CodeGenOpt::getLevel(EffectiveCGOptLevel);
+  assert(CGOptLevelOrNone && "Invalid codegen optimization level!");
+  Conf.CGOptLevel = *CGOptLevelOrNone;
   Conf.OptLevel = CGOpts.OptimizationLevel;
   initTargetOptions(CI, Diags, Conf.Options);
   Conf.SampleProfile = std::move(SampleProfile);

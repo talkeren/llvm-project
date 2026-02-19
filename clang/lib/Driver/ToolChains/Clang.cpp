@@ -5281,6 +5281,8 @@ void Clang::ConstructJob(Compilation &C, const JobAction &JA,
   if (Args.getLastArg(options::OPT_save_temps_EQ))
     Args.AddLastArg(CmdArgs, options::OPT_save_temps_EQ);
 
+  Args.AddLastArg(CmdArgs, options::OPT_fthinlto_CGO);
+
   auto *MemProfArg = Args.getLastArg(options::OPT_fmemory_profile,
                                      options::OPT_fmemory_profile_EQ,
                                      options::OPT_fno_memory_profile);

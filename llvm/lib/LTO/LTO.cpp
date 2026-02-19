@@ -2436,6 +2436,8 @@ public:
     auto &Ops = CodegenOptions;
 
     Ops.push_back(Saver.save("-O" + Twine(C.OptLevel)));
+    Ops.push_back(Saver.save("-fthinlto-CGO" +
+                             Twine(static_cast<unsigned>(C.CGOptLevel))));
 
     if (C.Options.EmitAddrsig)
       Ops.push_back("-faddrsig");

@@ -58,6 +58,8 @@ public:
     Benign,
   };
 
+  static constexpr unsigned ThinLTOCGOptLevelUnspecified = 4;
+
   using CFBranchLabelSchemeKind = clang::CFBranchLabelSchemeKind;
   using ProfileInstrKind = llvm::driver::ProfileInstrKind;
   using AsanDetectStackUseAfterReturnMode =

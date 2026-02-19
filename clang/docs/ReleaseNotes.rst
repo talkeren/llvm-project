@@ -151,6 +151,9 @@ New Compiler Flags
   reduced BMI only for a C++20 importable module unit. Previously the users
   can only generate the reduced BMI as a by-product, e.g, an object files or
   a full BMI.
+- New option ``-fthinlto-CGO<N>`` allows overriding the ThinLTO backend codegen
+  optimization level independently from ``-O``. Used by lld DTLTO  to forward
+  the codegen optimization level to remote backend compilations.
 
 Deprecated Compiler Flags
 -------------------------

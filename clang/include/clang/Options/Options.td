@@ -3299,6 +3299,10 @@ def flto_jobs_EQ : Joined<["-"], "flto-jobs=">,
 def fthinlto_index_EQ : Joined<["-"], "fthinlto-index=">,
   Visibility<[ClangOption, CLOption, CC1Option]>, Group<f_Group>,
   HelpText<"Perform ThinLTO importing using provided function summary index">;
+def fthinlto_CGO : Joined<["-"], "fthinlto-CGO">,
+  Visibility<[ClangOption, CLOption, CC1Option]>, Group<f_Group>, MetaVarName<"<N>">,
+  HelpText<"Set ThinLTO backend codegen optimization level (0-3); default follows -O">,
+  MarshallingInfoInt<CodeGenOpts<"ThinLTOCGOptLevel">, "CodeGenOptions::ThinLTOCGOptLevelUnspecified">;
 def fthin_link_bitcode_EQ : Joined<["-"], "fthin-link-bitcode=">,
   Visibility<[ClangOption, CLOption, CC1Option]>, Group<f_Group>,
   HelpText<"Write minimized bitcode to <file> for the ThinLTO thin link only">,
