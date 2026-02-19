@@ -1943,6 +1943,20 @@ bool link(ArrayRef<const char *> argsArr, llvm::raw_ostream &stdoutOS,
   std::tie(config->thinLTOPrefixReplaceOld, config->thinLTOPrefixReplaceNew,
            config->thinLTOPrefixReplaceNativeObject) =
       getOldNewOptionsExtra(args, OPT_thinlto_prefix_replace_eq);
+
+  config->dtltoDistributor = args.getLastArgValue(OPT_thinlto_distributor_eq);
+  config->dtltoDistributorArgs =
+      args::getStrings(args, OPT_thinlto_distributor_arg_eq);
+  config->dtltoCompiler = args.getLastArgValue(OPT_thinlto_remote_compiler_eq);
+  config->dtltoCompilerPrependArgs =
+      args::getStrings(args, OPT_thinlto_remote_compiler_prepend_arg_eq);
+  config->dtltoCompilerArgs =
+      args::getStrings(args, OPT_thinlto_remote_compiler_arg_eq);
+
+  if (!config->dtltoDistributor.empty() && config->dtltoCompiler.empty())
+    error("a value must be specified for --thinlto-remote-compiler if "
+          "--thinlto-distributor is specified");
+
   if (config->thinLTOEmitIndexFiles && !config->thinLTOIndexOnly) {
     if (args.hasArg(OPT_thinlto_object_suffix_replace_eq))
       error("--thinlto-object-suffix-replace is not supported with "
@@ -2293,6 +2307,8 @@ bool link(ArrayRef<const char *> argsArr, llvm::raw_ostream &stdoutOS,
   config->timeTraceEnabled = args.hasArg(OPT_time_trace_eq);
   config->timeTraceGranularity =
       args::getInteger(args, OPT_time_trace_granularity_eq, 500);
+
+  config->saveTemps = args.hasArg(OPT_save_temps);
 
   // Initialize time trace profiler.
   if (config->timeTraceEnabled)

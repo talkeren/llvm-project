@@ -18,6 +18,7 @@
 #include "lld/Common/Strings.h"
 #include "lld/Common/TargetOptionsCommandFlags.h"
 #include "llvm/Bitcode/BitcodeWriter.h"
+#include "llvm/DTLTO/DTLTO.h"
 #include "llvm/LTO/Config.h"
 #include "llvm/LTO/LTO.h"
 #include "llvm/Support/Caching.h"
@@ -104,6 +105,14 @@ BitcodeCompiler::BitcodeCompiler() {
         std::string(config->thinLTOPrefixReplaceNew),
         std::string(config->thinLTOPrefixReplaceNativeObject),
         config->thinLTOEmitImportsFiles, indexFile.get(), onIndexWrite);
+  } else if (!config->dtltoDistributor.empty()) {
+    backend = lto::createOutOfProcessThinBackend(
+        llvm::hardware_concurrency(config->thinLTOJobs), onIndexWrite,
+        config->thinLTOEmitIndexFiles, config->thinLTOEmitImportsFiles,
+        config->outputFile, config->dtltoDistributor,
+        config->dtltoDistributorArgs, config->dtltoCompiler,
+        config->dtltoCompilerPrependArgs, config->dtltoCompilerArgs,
+        config->saveTemps);
   } else {
     backend = lto::createInProcessThinBackend(
         llvm::heavyweight_hardware_concurrency(config->thinLTOJobs),
@@ -111,7 +120,13 @@ BitcodeCompiler::BitcodeCompiler() {
         config->thinLTOEmitImportsFiles);
   }
 
-  ltoObj = std::make_unique<lto::LTO>(createConfig(), backend);
+  if (config->dtltoDistributor.empty())
+    ltoObj = std::make_unique<lto::LTO>(createConfig(), backend);
+  else
+    ltoObj = std::make_unique<lto::DTLTO>(
+        createConfig(), backend, /*ltoPartitions=*/1,
+        llvm::lto::LTO::LTOK_Default, config->outputFile,
+        config->saveTemps);
 }
 
 void BitcodeCompiler::add(BitcodeFile &f) {

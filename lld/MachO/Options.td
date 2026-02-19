@@ -49,6 +49,21 @@ def thinlto_object_suffix_replace_eq:
     Group<grp_lld>;
 def thinlto_prefix_replace_eq: Joined<["--"], "thinlto-prefix-replace=">,
     Group<grp_lld>;
+def thinlto_distributor_eq: Joined<["--"], "thinlto-distributor=">,
+    HelpText<"Distributor to use for ThinLTO backend compilations.">,
+    Group<grp_lld>;
+def thinlto_distributor_arg_eq: Joined<["--"], "thinlto-distributor-arg=">,
+    HelpText<"Arguments to pass to the ThinLTO distributor">,
+    Group<grp_lld>;
+def thinlto_remote_compiler_eq: Joined<["--"], "thinlto-remote-compiler=">,
+    HelpText<"Compiler for the ThinLTO distributor to invoke for ThinLTO backend compilations">,
+    Group<grp_lld>;
+def thinlto_remote_compiler_prepend_arg_eq: Joined<["--"], "thinlto-remote-compiler-prepend-arg=">,
+    HelpText<"Compiler prepend arguments for the ThinLTO distributor to pass for ThinLTO backend compilations">,
+    Group<grp_lld>;
+def thinlto_remote_compiler_arg_eq: Joined<["--"], "thinlto-remote-compiler-arg=">,
+    HelpText<"Compiler arguments for the ThinLTO distributor to pass for ThinLTO backend compilations">,
+    Group<grp_lld>;
 def reproduce: Separate<["--"], "reproduce">,
     Group<grp_lld>;
 def reproduce_eq: Joined<["--"], "reproduce=">,
